@@ -4,6 +4,7 @@ import NEW_RELEASES from './mocks/new_releases';
 import NAMES from './mocks/names';
 import MOVIE_LIST from './mocks/movie_lists';
 import FLATTEN_IDS from './mocks/flatten_ids';
+import MOVIE_LIST_BOXART from './mocks/movie_list_boxart';
 
 describe('arrays', () => {
     let result;
@@ -119,6 +120,27 @@ describe('arrays', () => {
         expected = [70111470, 654356453, 65432445, 675465];
         result = MOVIE_LIST.map(({ videos }) => {
             return videos.map(({ id }) => id);
+        }).concatAll();
+    });
+
+    it('Retrieve id, title, and a 150x200 box art url for every video', () => {
+        expected = [
+            { "id": 70111470, "title": "Die Hard", "boxart": "http://cdn-0.nflximg.com/images/2891/DieHard150.jpg" },
+            { "id": 654356453, "title": "Bad Boys", "boxart": "http://cdn-0.nflximg.com/images/2891/BadBoys150.jpg" },
+            {
+                "id": 65432445,
+                "title": "The Chamber",
+                "boxart": "http://cdn-0.nflximg.com/images/2891/TheChamber150.jpg"
+            },
+            { "id": 675465, "title": "Fracture", "boxart": "http://cdn-0.nflximg.com/images/2891/Fracture150.jpg" },
+        ];
+        result = MOVIE_LIST_BOXART.map(({ videos }) => {
+            return videos.map(({ id, title, boxarts }) => ({
+                id, title,
+                boxart: boxarts
+                    .filter(({ url }) => url.indexOf('150') !== -1)
+                    .map(({url}) => url)[0]
+            }));
         }).concatAll();
     });
 });
