@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import NEW_RELEASES from './mocks/new_releases';
 import NAMES from './mocks/names';
 import MOVIE_LIST from './mocks/movie_lists';
+import FLATTEN_IDS from './mocks/flatten_ids';
 
 describe('arrays', () => {
     let result;
@@ -93,7 +94,31 @@ describe('arrays', () => {
             .map(({ id }) => id);
     });
 
-    it(' Flatten the movieLists array into an array of video ids', () => {
+    it('Flatten the movieLists array into an array of video ids', () => {
+        expected = [70111470, 654356453, 65432445, 675465];
+        MOVIE_LIST.forEach(({ videos }) => {
+            videos.forEach(({ id }) => {
+                result.push(id);
+            });
+        });
+    });
 
+    it('Implement concatAll()', () => {
+        Array.prototype.concatAll = function () {
+            const results = [];
+            this.forEach(function (subArray) {
+                results.push.apply(results, subArray);
+            });
+            return results;
+        };
+        expected = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        result = FLATTEN_IDS.concatAll();
+    });
+
+    it('Use map() and concatAll() to project and flatten the movieLists into an array of video ids', () => {
+        expected = [70111470, 654356453, 65432445, 675465];
+        result = MOVIE_LIST.map(({ videos }) => {
+            return videos.map(({ id }) => id);
+        }).concatAll();
     });
 });

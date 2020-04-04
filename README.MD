@@ -1,3 +1,4 @@
 - Library: Microsoft RxJs
 - Exercises: http://reactivex.io/learnrx/
 - Documentation: https://github.com/ReactiveX/rxjs/tree/6.x
+- run tests: `npm run test`
