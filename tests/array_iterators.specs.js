@@ -135,12 +135,14 @@ describe('arrays', () => {
             { "id": 675465, "title": "Fracture", "boxart": "http://cdn-0.nflximg.com/images/2891/Fracture150.jpg" },
         ];
         result = MOVIE_LIST_BOXART.map(({ videos }) => {
-            return videos.map(({ id, title, boxarts }) => ({
-                id, title,
-                boxart: boxarts
-                    .filter(({ url }) => url.indexOf('150') !== -1)
-                    .map(({url}) => url)[0]
-            }));
+            return videos.map(({ id, title, boxarts }) => {
+                return boxarts
+                    .filter(({ width, height }) => width === 150 && height === 200)
+                    .map(({ url }) => ({
+                        id, title,
+                        boxart: url,
+                    }));
+            }).concatAll();
         }).concatAll();
     });
 });
