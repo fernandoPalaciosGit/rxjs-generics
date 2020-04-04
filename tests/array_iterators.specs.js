@@ -66,8 +66,8 @@ describe('arrays', () => {
                 rating: 5,
                 bookmark: [
                     {
-                        "id": 432534,
-                        "time": 65876586
+                        id: 432534,
+                        time: 65876586
                     }
                 ],
             },
@@ -79,8 +79,8 @@ describe('arrays', () => {
                 rating: 5,
                 bookmark: [
                     {
-                        "id": 432534,
-                        "time": 65876586
+                        id: 432534,
+                        time: 65876586
                     }
                 ]
             }
@@ -126,21 +126,21 @@ describe('arrays', () => {
     describe('should concat arrays from mapping nested objects', () => {
         const videosList = [
             {
-                "id": 70111470,
-                "title": "Die Hard",
-                "boxart": "http://cdn-0.nflximg.com/images/2891/DieHard150.jpg"
+                id: 70111470,
+                title: 'Die Hard',
+                boxart: 'http://cdn-0.nflximg.com/images/2891/DieHard150.jpg'
             },
             {
-                "id": 654356453,
-                "title": "Bad Boys",
-                "boxart": "http://cdn-0.nflximg.com/images/2891/BadBoys150.jpg"
+                id: 654356453,
+                title: 'Bad Boys',
+                boxart: 'http://cdn-0.nflximg.com/images/2891/BadBoys150.jpg'
             },
             {
-                "id": 65432445,
-                "title": "The Chamber",
-                "boxart": "http://cdn-0.nflximg.com/images/2891/TheChamber150.jpg"
+                id: 65432445,
+                title: 'The Chamber',
+                boxart: 'http://cdn-0.nflximg.com/images/2891/TheChamber150.jpg'
             },
-            { "id": 675465, "title": "Fracture", "boxart": "http://cdn-0.nflximg.com/images/2891/Fracture150.jpg" },
+            { id: 675465, title: 'Fracture', boxart: 'http://cdn-0.nflximg.com/images/2891/Fracture150.jpg' },
         ];
 
         it('Retrieve id, title, and a 150x200 box art url for every video', () => {
@@ -175,6 +175,67 @@ describe('arrays', () => {
                             boxart: url,
                         }));
                 });
+            });
+        });
+    });
+
+    describe('Implement reduce()', () => {
+        Array.prototype.reduce = function (iterator, initialValue) {
+            let counter,
+                accumulatedValue = [];
+
+            // If the array is empty, do nothing
+            if (this.length === 0) {
+                return accumulatedValue;
+            } else {
+                // If the user didn't pass an initial value, use the first item.
+                if (arguments.length === 1) {
+                    counter = 1;
+                    accumulatedValue = this[0];
+                } else if (arguments.length >= 2) {
+                    counter = 0;
+                    accumulatedValue = initialValue;
+                } else {
+                    throw 'Invalid arguments';
+                }
+
+                // Loop through the array, feeding the current value and the result of
+                // the previous computation back into the combiner function until
+                // we've exhausted the entire array and are left with only one value.
+                while (counter < this.length) {
+                    accumulatedValue = iterator(accumulatedValue, this[counter]);
+                    counter++;
+                }
+
+                return [accumulatedValue];
+            }
+        };
+
+        it('returns an array with the accumulated value', () => {
+            expected = [6];
+            result = [1, 2, 3].reduce((acc, value) => acc + value, 0);
+        });
+
+        it('returns an empty array', () => {
+            expected = [];
+            result = [].reduce((acc, value) => acc + value, 0);
+        });
+
+        it('should takes first item as an accumulator', () => {
+            expected = [10];
+            result = [5, 2, 3].reduce((acc, value) => acc + value);
+        });
+
+        it('should throws an error if hasn´t arguments', () => {
+            const errorResult = () => [1, 2, 3].reduce();
+            expect(errorResult).to.throw('Invalid arguments');
+        });
+
+        it('Retrieve the largest rating.', () => {
+            const ratings = [2, 3, 1, 4, 5];
+            expected = [5];
+            result = ratings.reduce((acc, value) => {
+                return acc > value ? acc : value;
             });
         });
     });
