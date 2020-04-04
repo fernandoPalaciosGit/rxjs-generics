@@ -1,0 +1,18 @@
+{
+  "name": "rxjs-generics",
+  "version": "1.0.0",
+  "description": "generic scripts for training rxjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "rxjs",
+    "observable"
+  ],
+  "author": "Fernando Palacios Landi",
+  "license": "ISC",
+  "dependencies": {
+    "rxjs": "^6.5.4"
+  }
+}
