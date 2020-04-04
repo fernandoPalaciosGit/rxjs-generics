@@ -239,4 +239,50 @@ describe('arrays', () => {
             });
         });
     });
+
+    it('Retrieve url of the largest boxart', () => {
+        const boxarts = [
+            { width: 200, height: 200, url: "http://cdn-0.nflximg.com/images/2891/Fracture200.jpg" },
+            { width: 150, height: 200, url: "http://cdn-0.nflximg.com/images/2891/Fracture150.jpg" },
+            { width: 300, height: 200, url: "http://cdn-0.nflximg.com/images/2891/Fracture300.jpg" },
+            { width: 425, height: 150, url: "http://cdn-0.nflximg.com/images/2891/Fracture425.jpg" }
+        ];
+        expected = ["http://cdn-0.nflximg.com/images/2891/Fracture425.jpg"];
+        result = boxarts.reduce((acc, val) => {
+            return (acc.width * acc.height > val.width * val.height ? acc : val);
+        }).map(({ url }) => url);
+    });
+
+    it('Reducing with an initial value', () => {
+        const videos = [
+            {
+                "id": 65432445,
+                "title": "The Chamber"
+            },
+            {
+                "id": 675465,
+                "title": "Fracture"
+            },
+            {
+                "id": 70111470,
+                "title": "Die Hard"
+            },
+            {
+                "id": 654356453,
+                "title": "Bad Boys"
+            }
+        ];
+        expected = [{
+            "65432445": "The Chamber",
+            "675465": "Fracture",
+            "70111470": "Die Hard",
+            "654356453": "Bad Boys"
+        }];
+        result = videos.reduce((acc, { id, title }) => {
+            // IMPORTANT: never override an object by reference, take a copy
+            const copyAcc = { ...acc }; // be careful, this is a shallow copy, only works with one order dimension, nested object will pass as reference)
+            copyAcc[id] = title;
+            return copyAcc;
+        }, {});
+    });
 });
