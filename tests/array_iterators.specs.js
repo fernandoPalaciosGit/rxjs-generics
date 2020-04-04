@@ -25,10 +25,10 @@ describe('arrays', () => {
     });
 
     it('Implement map()', () => {
-        Array.prototype.map = function (projectionFunction) {
+        Array.prototype.map = function (iterable) {
             const results = [];
             this.forEach(function (itemInArray) {
-                results.push(projectionFunction(itemInArray));
+                results.push(iterable(itemInArray));
             });
             return results;
         };
@@ -45,10 +45,10 @@ describe('arrays', () => {
     });
 
     it('Implement filter()', () => {
-        Array.prototype.filter = function (predicateFunction) {
+        Array.prototype.filter = function (iterable) {
             const results = [];
             this.forEach(function (itemInArray) {
-                if (predicateFunction(itemInArray)) {
+                if (iterable(itemInArray)) {
                     results.push(itemInArray);
                 }
             });
@@ -123,10 +123,18 @@ describe('arrays', () => {
         }).concatAll();
     });
 
-    it('Retrieve id, title, and a 150x200 box art url for every video', () => {
-        expected = [
-            { "id": 70111470, "title": "Die Hard", "boxart": "http://cdn-0.nflximg.com/images/2891/DieHard150.jpg" },
-            { "id": 654356453, "title": "Bad Boys", "boxart": "http://cdn-0.nflximg.com/images/2891/BadBoys150.jpg" },
+    describe('should concat arrays from mapping nested objects', () => {
+        const videosList = [
+            {
+                "id": 70111470,
+                "title": "Die Hard",
+                "boxart": "http://cdn-0.nflximg.com/images/2891/DieHard150.jpg"
+            },
+            {
+                "id": 654356453,
+                "title": "Bad Boys",
+                "boxart": "http://cdn-0.nflximg.com/images/2891/BadBoys150.jpg"
+            },
             {
                 "id": 65432445,
                 "title": "The Chamber",
@@ -134,15 +142,40 @@ describe('arrays', () => {
             },
             { "id": 675465, "title": "Fracture", "boxart": "http://cdn-0.nflximg.com/images/2891/Fracture150.jpg" },
         ];
-        result = MOVIE_LIST_BOXART.map(({ videos }) => {
-            return videos.map(({ id, title, boxarts }) => {
-                return boxarts
-                    .filter(({ width, height }) => width === 150 && height === 200)
-                    .map(({ url }) => ({
-                        id, title,
-                        boxart: url,
-                    }));
+
+        it('Retrieve id, title, and a 150x200 box art url for every video', () => {
+            expected = videosList;
+            result = MOVIE_LIST_BOXART.map(({ videos }) => {
+                return videos.map(({ id, title, boxarts }) => {
+                    return boxarts
+                        .filter(({ width, height }) => width === 150 && height === 200)
+                        .map(({ url }) => ({
+                            id, title,
+                            boxart: url,
+                        }));
+                }).concatAll();
             }).concatAll();
-        }).concatAll();
+        });
+
+        it('Implement concatMap()', () => {
+            expected = [];
+            Array.prototype.concatMap = function (iterable) {
+                return this.map((...args) => iterable.apply({}, args)).concatAll();
+            };
+        });
+
+        it('Use concatMap() to retrieve id, title, and 150x200 box art url for every video', () => {
+            expected = videosList;
+            result = MOVIE_LIST_BOXART.concatMap(({ videos }) => {
+                return videos.concatMap(({ id, title, boxarts }) => {
+                    return boxarts
+                        .filter(({ width, height }) => width === 150 && height === 200)
+                        .map(({ url }) => ({
+                            id, title,
+                            boxart: url,
+                        }));
+                });
+            });
+        });
     });
 });
