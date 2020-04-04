@@ -7,7 +7,7 @@ const NEW_RELEASES = [
         "title": "Die Hard",
         "boxart": "http://cdn-0.nflximg.com/images/2891/DieHard.jpg",
         "uri": "http://api.netflix.com/catalog/titles/movies/70111470",
-        "rating": [4.0],
+        "rating": 4.0,
         "bookmark": []
     },
     {
@@ -15,7 +15,7 @@ const NEW_RELEASES = [
         "title": "Bad Boys",
         "boxart": "http://cdn-0.nflximg.com/images/2891/BadBoys.jpg",
         "uri": "http://api.netflix.com/catalog/titles/movies/70111470",
-        "rating": [5.0],
+        "rating": 5.0,
         "bookmark": [{ id: 432534, time: 65876586 }]
     },
     {
@@ -23,7 +23,7 @@ const NEW_RELEASES = [
         "title": "The Chamber",
         "boxart": "http://cdn-0.nflximg.com/images/2891/TheChamber.jpg",
         "uri": "http://api.netflix.com/catalog/titles/movies/70111470",
-        "rating": [4.0],
+        "rating": 4.0,
         "bookmark": []
     },
     {
@@ -31,7 +31,7 @@ const NEW_RELEASES = [
         "title": "Fracture",
         "boxart": "http://cdn-0.nflximg.com/images/2891/Fracture.jpg",
         "uri": "http://api.netflix.com/catalog/titles/movies/70111470",
-        "rating": [5.0],
+        "rating": 5.0,
         "bookmark": [{ id: 432534, time: 65876586 }]
     }
 ];
@@ -63,5 +63,27 @@ describe('arrays', () => {
 
     it(' Project an array of videos into an array of {id,title}', () => {
         result = NEW_RELEASES.map(({ id, title }) => ({ id, title }));
+    });
+
+    it('Implement filter()', () => {
+        Array.prototype.filter = function (predicateFunction) {
+            var results = [];
+            this.forEach(function (itemInArray) {
+                if (predicateFunction(itemInArray)) {
+                    results.push(itemInArray);
+                }
+            });
+            return results;
+        };
+    });
+
+    it('Use forEach() to collect only those videos with a rating of 5.0', () => {
+        result = NEW_RELEASES.filter(({ rating }) => rating === 5.0);
+    });
+
+    it(' Chain filter and map to collect the ids of videos that have a rating of 5.0', () => {
+        result = NEW_RELEASES
+            .filter(({ rating }) => rating === 5.0)
+            .map(({ id }) => id);
     });
 });
