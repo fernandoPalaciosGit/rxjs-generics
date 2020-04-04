@@ -6,6 +6,7 @@
   "ui": "bdd",
   "spec": "./tests/**/*.specs.js",
   "require": [
+    "babel-core/register",
     "./tests/setup.js"
   ]
 }

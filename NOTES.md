@@ -1,8 +1,5 @@
-PROBLEMAS DE EJECUCIONES ASINCRONAS
-
-
-- CALLBACK HELL: encadenar multiples llamadas asincronas
-
+##PROBLEMAS DE EJECUCIONES ASINCRONAS
+ CALLBACK HELL: encadenar multiples llamadas asincronas
 - RACE CONDITIONS: lanzar dos reques asincronas en el mismo callstack y resolver el orden de llegada
 
 - MEMORY LEAKS : la memoria de los nodos o hilos donde se ejecutan las instrucciones asincronas se paralizan
@@ -12,12 +9,12 @@ PROBLEMAS DE EJECUCIONES ASINCRONAS
 - UNCAUGHT ASYNC ERRORS:
 
 
-DISEÑO DE TAREAS ASINCRONAS (modelos antiguos)
+##DISEÑO DE TAREAS ASINCRONAS (modelos antiguos)
 VARIABLES DE CONTROL: cuando se quieren lanzar varias peticiones asincronas a un servicio, se pueden tener FLAGs de control de estado en cada peticion que permitan saber al otro contexto de ejecucion asincrona si puede o no resolver su estado.
 El problema de esta nmodalidad es que no escala muy bien por complejidad, y el codigo deja de mantenerse
 
 
-NUEVA METODOLOGIA
+##NUEVA METODOLOGIA
 programar las funciones a traves de unas funiones flexibles reutilizables.
 
 
@@ -26,17 +23,17 @@ como las accines del usuario sobre el mouse se sucriben y asocian a evenmtos del
 se trata de aprender como relacionar estos dos patrones y usarlo para resolber problemas de asincronia
 
 
-Patrones de diseño
+#Patrones de diseño
 - ITERADOR:
 - OBSERVER:
 
-- ITERADOR: prodcer + consumer
+### ITERADOR: prodcer + consumer
 [1, 2, 3].iterator() -> devuelve un iterador
 - esta modalidad la utikliza el for of,
 - se puede aplicar a cualquier modelo de datos: arrays, hashmaps
 - en este patron, el [consumer es quien pide los datos] al iterador, es el encargado de la secuencia
 
-- OBSEERVER
+### OBSERVER
 document.addEventListener('mousemove', function next(ev) {log(ev)} , false);
 el stream de datos generados por la interaccion del usuario es el producer: 'mouseevent'
 el callbaxk asociado es el consumer
@@ -45,7 +42,7 @@ en este caso es el [producer que hace push] para la secuencia de operaciones
 - se puede deducir que son patrones simetricos, y se puede usar para resolver problemas de asincronia
 
 
-APLICACIONES
+#APLICACIONES
 existe una proliferacion de APIs en la web qu eutilizan esta idea: acciones asincronas que hacen push de datos sobre la aplicaion (browser)
 ---
 DOM Events
@@ -57,7 +54,7 @@ Httprequest
 setinterval
 ---
 
-CONCLUSION: es un error, deberiamos tener una unica interfaz que usemos para ejecutar (hacer push) de acciones asincronas
+- CONCLUSION: es un error, deberiamos tener una unica interfaz que usemos para ejecutar (hacer push) de acciones asincronas
 
 
 OBSERVABLES: son una coleccion de llamadas que llegan unas tras otras.
