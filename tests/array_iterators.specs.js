@@ -367,10 +367,10 @@ describe('Testing array iteration interfaces', () => {
             videos: VIDEOS_SCHEMA.TAPES.filter(({ listId }) => listId === genre.id)
                 .flatMap(({ id, title }) => {
                     const bookMark = VIDEOS_SCHEMA.BOOKMARKS.filter(({ videoId }) => videoId === id);
-                    const boxart = VIDEOS_SCHEMA.BOXARTS.filter(({ videoId }) => videoId === id)
+                    const boxArt = VIDEOS_SCHEMA.BOXARTS.filter(({ videoId }) => videoId === id)
                         .reduce((acc, next) => acc.width * acc.height < next.width * next.height ? acc : next);
 
-                    return bookMark.zip(boxart, ({ time }, { url }) => ({
+                    return bookMark.zip(boxArt, ({ time }, { url }) => ({
                         id, title, time, boxart: url
                     }));
                 })
