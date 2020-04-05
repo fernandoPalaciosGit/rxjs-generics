@@ -6,6 +6,7 @@ import MOVIE_LIST from './mocks/movie_lists';
 import FLATTEN_IDS from './mocks/flatten_ids';
 import MOVIE_LIST_BOXART from './mocks/movie_list_boxart';
 import VIDEO_LIST from './mocks/video_list';
+import MOVIE_LIST_INTERESTING_MOMENTS from './mocks/movie_list_interesting_moment';
 import {} from '../prototypes/array_iterators';
 
 describe('Testing array iteration interfaces', () => {
@@ -253,6 +254,38 @@ describe('Testing array iteration interfaces', () => {
                 videoId: video.id,
                 bookmarkId: book.id,
             }));
+        });
+    });
+
+    it('Retrieve each video\'s id, title, middle interesting moment time, and smallest box art url', () => {
+        expected =
+            [{
+                "id": 70111470,
+                "title": "Die Hard",
+                "time": 323133,
+                "url": "http://cdn-0.nflximg.com/images/2891/DieHard150.jpg"
+            }, {
+                "id": 654356453,
+                "title": "Bad Boys",
+                "time": 6575665,
+                "url": "http://cdn-0.nflximg.com/images/2891/BadBoys140.jpg"
+            }, {
+                "id": 65432445,
+                "title": "The Chamber",
+                "time": 3452343,
+                "url": "http://cdn-0.nflximg.com/images/2891/TheChamber130.jpg"
+            }, {
+                "id": 675465,
+                "title": "Fracture",
+                "time": 3453434,
+                "url": "http://cdn-0.nflximg.com/images/2891/Fracture120.jpg"
+            }];
+        result = MOVIE_LIST_INTERESTING_MOMENTS.concatMap(({ videos }) => {
+            return videos.concatMap(({ id, title, boxarts, interestingMoments }) => {
+                const moments = interestingMoments.filter(({ type }) => type === 'Middle');
+                const boxart = boxarts.reduce((accBox, nextBox) => accBox.width * accBox.height < nextBox.width * nextBox.height ? accBox : nextBox);
+                return moments.zip(boxart, ({ time }, { url }) => ({ id, title, time, url }));
+            });
         });
     });
 });
