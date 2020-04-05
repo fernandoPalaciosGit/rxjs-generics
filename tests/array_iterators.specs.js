@@ -324,4 +324,56 @@ describe('Testing array iteration interfaces', () => {
             videos: VIDEOS_SCHEMA.TAPES.filter(({ listId }) => listId === id).map(({ id, title }) => ({ id, title }))
         }))
     });
+
+    it('Converting from Arrays to Deeper Trees', () => {
+        expected = [
+            {
+                "name": "New Releases",
+                "videos": [
+                    {
+                        "id": 65432445,
+                        "title": "The Chamber",
+                        "time": 32432,
+                        "boxart": "http://cdn-0.nflximg.com/images/2891/TheChamber130.jpg"
+                    },
+                    {
+                        "id": 675465,
+                        "title": "Fracture",
+                        "time": 3534543,
+                        "boxart": "http://cdn-0.nflximg.com/images/2891/Fracture120.jpg"
+                    }
+                ]
+            },
+            {
+                "name": "Thrillers",
+                "videos": [
+                    {
+                        "id": 70111470,
+                        "title": "Die Hard",
+                        "time": 645243,
+                        "boxart": "http://cdn-0.nflximg.com/images/2891/DieHard150.jpg"
+                    },
+                    {
+                        "id": 654356453,
+                        "title": "Bad Boys",
+                        "time": 984934,
+                        "boxart": "http://cdn-0.nflximg.com/images/2891/BadBoys140.jpg"
+                    }
+                ]
+            }
+        ];
+        result = VIDEOS_SCHEMA.GENRES.map((genre) => ({
+            name: genre.name,
+            videos: VIDEOS_SCHEMA.TAPES.filter(({ listId }) => listId === genre.id)
+                .flatMap(({ id, title }) => {
+                    const bookMark = VIDEOS_SCHEMA.BOOKMARKS.filter(({ videoId }) => videoId === id);
+                    const boxart = VIDEOS_SCHEMA.BOXARTS.filter(({ videoId }) => videoId === id)
+                        .reduce((acc, next) => acc.width * acc.height < next.width * next.height ? acc : next);
+
+                    return bookMark.zip(boxart, ({ time }, { url }) => ({
+                        id, title, time, boxart: url
+                    }));
+                })
+        }));
+    });
 });
