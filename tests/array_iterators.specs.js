@@ -7,6 +7,7 @@ import FLATTEN_IDS from './mocks/flatten_ids';
 import MOVIE_LIST_BOXART from './mocks/movie_list_boxart';
 import VIDEO_LIST from './mocks/video_list';
 import MOVIE_LIST_INTERESTING_MOMENTS from './mocks/movie_list_interesting_moment';
+import * as VIDEOS_SCHEMA from './mocks/query_list_videos';
 import {} from '../prototypes/array_iterators';
 
 describe('Testing array iteration interfaces', () => {
@@ -287,5 +288,40 @@ describe('Testing array iteration interfaces', () => {
                 return moments.zip(boxart, ({ time }, { url }) => ({ id, title, time, url }));
             });
         });
+    });
+
+    it('Converting from Arrays to Trees', () => {
+        expected = [
+            {
+                "name": "New Releases",
+                "videos": [
+                    {
+                        "id": 65432445,
+                        "title": "The Chamber"
+                    },
+                    {
+                        "id": 675465,
+                        "title": "Fracture"
+                    }
+                ]
+            },
+            {
+                "name": "Thrillers",
+                "videos": [
+                    {
+                        "id": 70111470,
+                        "title": "Die Hard"
+                    },
+                    {
+                        "id": 654356453,
+                        "title": "Bad Boys"
+                    }
+                ]
+            }
+        ];
+        result = VIDEOS_SCHEMA.GENRES.map(({ name, id }) => ({
+            name,
+            videos: VIDEOS_SCHEMA.TAPES.filter(({ listId }) => listId === id).map(({ id, title }) => ({ id, title }))
+        }))
     });
 });

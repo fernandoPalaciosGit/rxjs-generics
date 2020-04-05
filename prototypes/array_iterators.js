@@ -29,7 +29,7 @@ Array.prototype.flat = function () {
 
 // @Override
 Array.prototype.flatMap = function (iterator) {
-    return this.map((...args) => iterator.apply({}, args)).concatAll();
+    return this.map((...args) => iterator.apply({}, args)).flat();
 };
 
 // @Override
