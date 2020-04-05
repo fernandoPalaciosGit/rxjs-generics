@@ -180,3 +180,12 @@ FLATMAP()
 ZIP() -> CREMALLERA / MERGE DE ARRAYS
 se trata de un metodo que hace merge entre arrays
 recibe el nombre por su comportamiento, ya que escoje cada indice de los arrays y los mergea hasta que no encuentra ningulna correclacion y deja de mergear 
+
+
+TRABAJAR CON ITERABLES DE STREAM DE DATOS ---> Observables
+- map(), reduce(), zip(), flat(), flatMap(), flter() : rimero acederemos y transformaremos los datos -> procesamos los datos -> se crea un nuevo dato, no se manipula el stream de entrada [evitamos el problema de estado]
+- foreach(): el objotivo es resolver la coleccion de streams de datos que son impredecibles a cambios
+- programamcion reactiva: una de sus particularidades es que permite asociar una accion nuestra a un callback en el que se modifica un dato. de esta manera, con una interfaz adecuada (ngrx, redux), permite reaccionar a los datos que hacen push un stream de datos externos. 
+
+TAKE UNTIL NOS PERMITE SUSCRIBIRNOS A OTRO STREAM DE DATOS QUE DESSUSCRIBE EL ACTUAL STREAM DE REDUCER
+stream.pipe(takeuntil(stream))

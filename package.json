@@ -4,7 +4,8 @@
   "description": "generic scripts for training rxjs",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "webpack-dev-server"
   },
   "keywords": [
     "rxjs",
@@ -13,14 +14,17 @@
   "author": "Fernando Palacios Landi",
   "license": "ISC",
   "dependencies": {
-    "rxjs": "^6.5.4"
+    "rxjs": "^6.5.4",
+    "webpack": "^4.42.1"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "chai": "^4.2.0",
-    "mocha": "^7.1.1"
+    "mocha": "^7.1.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   },
   "babel": {
     "presets": [

@@ -1,4 +1,5 @@
 - Library: Microsoft RxJs
 - Exercises: http://reactivex.io/learnrx/
-- Documentation: https://github.com/ReactiveX/rxjs/tree/6.x
-- run tests: `npm run test`
+- Documentation: https://rxjs.dev/api
+- run Unit tests: `npm run test`
+- run app test: `npm run start` and go to `http://localhost:8080/`
