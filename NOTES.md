@@ -165,3 +165,10 @@ authorizations.forEach(
     (licence) => player.play(licence),
     (error) => log('can´t play right now'),
 );
+
+REDUCE()
+al construir un array, cuando quieres hacer una comparacion de varios elementos, debes usar un reduce(), porqu es el unico metodo del prototype de arrray que maneja 2 valores en el iterador.
+
+ZIP -> CREMALLERA
+se trata de un metodo que hace merge entre arrays
+recibe el nombre por su comportamiento, ya que escoje cada indice de los arrays y los mergea hasta que no encuentra ningulna correclacion y deja de mergear 

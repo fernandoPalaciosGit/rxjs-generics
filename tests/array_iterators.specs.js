@@ -5,6 +5,7 @@ import NAMES from './mocks/names';
 import MOVIE_LIST from './mocks/movie_lists';
 import FLATTEN_IDS from './mocks/flatten_ids';
 import MOVIE_LIST_BOXART from './mocks/movie_list_boxart';
+import VIDEO_LIST from './mocks/video_list';
 import {} from '../prototypes/array_iterators';
 
 describe('Testing array iteration interfaces', () => {
@@ -91,27 +92,29 @@ describe('Testing array iteration interfaces', () => {
     });
 
     describe('should concat arrays from mapping nested objects', () => {
-        const videosList = [
-            {
-                id: 70111470,
-                title: 'Die Hard',
-                boxart: 'http://cdn-0.nflximg.com/images/2891/DieHard150.jpg'
-            },
-            {
-                id: 654356453,
-                title: 'Bad Boys',
-                boxart: 'http://cdn-0.nflximg.com/images/2891/BadBoys150.jpg'
-            },
-            {
-                id: 65432445,
-                title: 'The Chamber',
-                boxart: 'http://cdn-0.nflximg.com/images/2891/TheChamber150.jpg'
-            },
-            { id: 675465, title: 'Fracture', boxart: 'http://cdn-0.nflximg.com/images/2891/Fracture150.jpg' },
-        ];
+
+        beforeEach(() => {
+            expected = [
+                {
+                    id: 70111470,
+                    title: 'Die Hard',
+                    boxart: 'http://cdn-0.nflximg.com/images/2891/DieHard150.jpg'
+                },
+                {
+                    id: 654356453,
+                    title: 'Bad Boys',
+                    boxart: 'http://cdn-0.nflximg.com/images/2891/BadBoys150.jpg'
+                },
+                {
+                    id: 65432445,
+                    title: 'The Chamber',
+                    boxart: 'http://cdn-0.nflximg.com/images/2891/TheChamber150.jpg'
+                },
+                { id: 675465, title: 'Fracture', boxart: 'http://cdn-0.nflximg.com/images/2891/Fracture150.jpg' },
+            ]
+        });
 
         it('Retrieve id, title, and a 150x200 box art url for every video', () => {
-            expected = videosList;
             result = MOVIE_LIST_BOXART.map(({ videos }) => {
                 return videos.map(({ id, title, boxarts }) => {
                     return boxarts
@@ -130,7 +133,6 @@ describe('Testing array iteration interfaces', () => {
         });
 
         it('Use concatMap() to retrieve id, title, and 150x200 box art url for every video', () => {
-            expected = videosList;
             result = MOVIE_LIST_BOXART.concatMap(({ videos }) => {
                 return videos.concatMap(({ id, title, boxarts }) => {
                     return boxarts
@@ -188,31 +190,13 @@ describe('Testing array iteration interfaces', () => {
     });
 
     it('Reducing with an initial value', () => {
-        const videos = [
-            {
-                "id": 65432445,
-                "title": "The Chamber"
-            },
-            {
-                "id": 675465,
-                "title": "Fracture"
-            },
-            {
-                "id": 70111470,
-                "title": "Die Hard"
-            },
-            {
-                "id": 654356453,
-                "title": "Bad Boys"
-            }
-        ];
         expected = [{
             "65432445": "The Chamber",
             "675465": "Fracture",
             "70111470": "Die Hard",
             "654356453": "Bad Boys"
         }];
-        result = videos.reduce((acc, { id, title }) => {
+        result = VIDEO_LIST.reduce((acc, { id, title }) => {
             // IMPORTANT: never override an object by reference, take a copy
             const copyAcc = { ...acc }; // be careful, this is a shallow copy, only works with one order dimension, nested object will pass as reference)
             copyAcc[id] = title;
@@ -237,6 +221,38 @@ describe('Testing array iteration interfaces', () => {
                     return acc.width * acc.height < boxart.width * boxart.height ? acc : boxart;
                 }).map(({ url }) => ({ id, title, boxart: url }));
             });
+        });
+    });
+
+    describe('implement Zip', () => {
+        const BOOKMARKS = [
+            { id: 470, time: 23432 },
+            { id: 453, time: 234324 },
+            { id: 445, time: 987834 }
+        ];
+
+        beforeEach(() => {
+            expected = [
+                { "videoId": 65432445, "bookmarkId": 470 },
+                { "videoId": 675465, "bookmarkId": 453 },
+                { "videoId": 70111470, "bookmarkId": 445 }
+            ];
+        });
+
+        it('Combine videos and bookmarks by index, create a {videoId, bookmarkId}', () => {
+            for (let counter = 0; counter < Math.min(VIDEO_LIST.length, BOOKMARKS.length); counter++) {
+                result.push({
+                    videoId: VIDEO_LIST[counter].id,
+                    bookmarkId: BOOKMARKS[counter].id,
+                });
+            }
+        });
+
+        it('use zip prototype', () => {
+            result = VIDEO_LIST.zip(BOOKMARKS, (video, book) => ({
+                videoId: video.id,
+                bookmarkId: book.id,
+            }));
         });
     });
 });

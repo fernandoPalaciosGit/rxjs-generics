@@ -1,15 +1,15 @@
-Array.prototype.map = function (iterable) {
+Array.prototype.map = function (iterator) {
     const results = [];
     this.forEach(function (itemInArray) {
-        results.push(iterable(itemInArray));
+        results.push(iterator(itemInArray));
     });
     return results;
 };
 
-Array.prototype.filter = function (iterable) {
+Array.prototype.filter = function (iterator) {
     const results = [];
     this.forEach(function (itemInArray) {
-        if (iterable(itemInArray)) {
+        if (iterator(itemInArray)) {
             results.push(itemInArray);
         }
     });
@@ -24,8 +24,8 @@ Array.prototype.concatAll = function () {
     return results;
 };
 
-Array.prototype.concatMap = function (iterable) {
-    return this.map((...args) => iterable.apply({}, args)).concatAll();
+Array.prototype.concatMap = function (iterator) {
+    return this.map((...args) => iterator.apply({}, args)).concatAll();
 };
 
 Array.prototype.reduce = function (iterator, initialValue) {
@@ -57,4 +57,11 @@ Array.prototype.reduce = function (iterator, initialValue) {
 
         return [accumulatedValue];
     }
+};
+
+Array.prototype.zip = function (right, iterator) {
+    const counter = Math.min(this.length, right.length);
+    const range = Array.from(Array(counter).keys());
+
+    return range.map((index) => iterator(this[index], right[index]));
 };
