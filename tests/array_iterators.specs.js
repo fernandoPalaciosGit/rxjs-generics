@@ -6,7 +6,7 @@ import MOVIE_LIST from './mocks/movie_lists';
 import FLATTEN_IDS from './mocks/flatten_ids';
 import MOVIE_LIST_BOXART from './mocks/movie_list_boxart';
 
-describe('arrays', () => {
+describe('Testing array iteration interfaces', () => {
     let result;
     let expected;
 
@@ -123,6 +123,13 @@ describe('arrays', () => {
         }).concatAll();
     });
 
+    it('Implement concatMap()', () => {
+        expected = [];
+        Array.prototype.concatMap = function (iterable) {
+            return this.map((...args) => iterable.apply({}, args)).concatAll();
+        };
+    });
+
     describe('should concat arrays from mapping nested objects', () => {
         const videosList = [
             {
@@ -155,13 +162,6 @@ describe('arrays', () => {
                         }));
                 }).concatAll();
             }).concatAll();
-        });
-
-        it('Implement concatMap()', () => {
-            expected = [];
-            Array.prototype.concatMap = function (iterable) {
-                return this.map((...args) => iterable.apply({}, args)).concatAll();
-            };
         });
 
         it('Use concatMap() to retrieve id, title, and 150x200 box art url for every video', () => {
@@ -284,5 +284,25 @@ describe('arrays', () => {
             copyAcc[id] = title;
             return copyAcc;
         }, {});
+    });
+
+    it('Retrieve the id, title, and smallest box art url for every video.', () => {
+        expected = [
+            { "id": 70111470, "title": "Die Hard", "boxart": "http://cdn-0.nflximg.com/images/2891/DieHard150.jpg" },
+            { "id": 654356453, "title": "Bad Boys", "boxart": "http://cdn-0.nflximg.com/images/2891/BadBoys150.jpg" },
+            {
+                "id": 65432445,
+                "title": "The Chamber",
+                "boxart": "http://cdn-0.nflximg.com/images/2891/TheChamber150.jpg"
+            },
+            { "id": 675465, "title": "Fracture", "boxart": "http://cdn-0.nflximg.com/images/2891/Fracture150.jpg" },
+        ];
+        result = MOVIE_LIST_BOXART.concatMap(({ videos }) => {
+            return videos.concatMap(({ id, title, boxarts }) => {
+                return boxarts.reduce((acc, boxart) => {
+                    return acc.width * acc.height < boxart.width * boxart.height ? acc : boxart;
+                }).map(({ url }) => ({ id, title, boxart: url }));
+            });
+        });
     });
 });
