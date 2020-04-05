@@ -1,3 +1,4 @@
+// @Override
 Array.prototype.map = function (iterator) {
     const results = [];
     this.forEach(function (itemInArray) {
@@ -6,6 +7,7 @@ Array.prototype.map = function (iterator) {
     return results;
 };
 
+// @Override
 Array.prototype.filter = function (iterator) {
     const results = [];
     this.forEach(function (itemInArray) {
@@ -16,7 +18,8 @@ Array.prototype.filter = function (iterator) {
     return results;
 };
 
-Array.prototype.concatAll = function () {
+// @Override
+Array.prototype.flat = function () {
     const results = [];
     this.forEach(function (subArray) {
         results.push.apply(results, subArray);
@@ -24,10 +27,12 @@ Array.prototype.concatAll = function () {
     return results;
 };
 
-Array.prototype.concatMap = function (iterator) {
+// @Override
+Array.prototype.flatMap = function (iterator) {
     return this.map((...args) => iterator.apply({}, args)).concatAll();
 };
 
+// @Override
 Array.prototype.reduce = function (iterator, initialValue) {
     let counter,
         accumulatedValue = [];

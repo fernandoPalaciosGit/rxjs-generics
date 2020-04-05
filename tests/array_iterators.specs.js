@@ -85,11 +85,11 @@ describe('Testing array iteration interfaces', () => {
         });
     });
 
-    it('Use map() and concatAll() to project and flatten the movieLists into an array of video ids', () => {
+    it('Use map() and flat() to project and flatten the movieLists into an array of video ids', () => {
         expected = [70111470, 654356453, 65432445, 675465];
         result = MOVIE_LIST.map(({ videos }) => {
             return videos.map(({ id }) => id);
-        }).concatAll();
+        }).flat();
     });
 
     describe('should concat arrays from mapping nested objects', () => {
@@ -124,18 +124,18 @@ describe('Testing array iteration interfaces', () => {
                             id, title,
                             boxart: url,
                         }));
-                }).concatAll();
-            }).concatAll();
+                }).flat();
+            }).flat();
         });
 
-        it('Implement concatAll()', () => {
+        it('Implement flat()', () => {
             expected = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-            result = FLATTEN_IDS.concatAll();
+            result = FLATTEN_IDS.flat();
         });
 
-        it('Use concatMap() to retrieve id, title, and 150x200 box art url for every video', () => {
-            result = MOVIE_LIST_BOXART.concatMap(({ videos }) => {
-                return videos.concatMap(({ id, title, boxarts }) => {
+        it('Use flatMap() to retrieve id, title, and 150x200 box art url for every video', () => {
+            result = MOVIE_LIST_BOXART.flatMap(({ videos }) => {
+                return videos.flatMap(({ id, title, boxarts }) => {
                     return boxarts
                         .filter(({ width, height }) => width === 150 && height === 200)
                         .map(({ url }) => ({
@@ -216,8 +216,8 @@ describe('Testing array iteration interfaces', () => {
             },
             { "id": 675465, "title": "Fracture", "boxart": "http://cdn-0.nflximg.com/images/2891/Fracture150.jpg" },
         ];
-        result = MOVIE_LIST_BOXART.concatMap(({ videos }) => {
-            return videos.concatMap(({ id, title, boxarts }) => {
+        result = MOVIE_LIST_BOXART.flatMap(({ videos }) => {
+            return videos.flatMap(({ id, title, boxarts }) => {
                 return boxarts.reduce((acc, boxart) => {
                     return acc.width * acc.height < boxart.width * boxart.height ? acc : boxart;
                 }).map(({ url }) => ({ id, title, boxart: url }));
@@ -280,8 +280,8 @@ describe('Testing array iteration interfaces', () => {
                 "time": 3453434,
                 "url": "http://cdn-0.nflximg.com/images/2891/Fracture120.jpg"
             }];
-        result = MOVIE_LIST_INTERESTING_MOMENTS.concatMap(({ videos }) => {
-            return videos.concatMap(({ id, title, boxarts, interestingMoments }) => {
+        result = MOVIE_LIST_INTERESTING_MOMENTS.flatMap(({ videos }) => {
+            return videos.flatMap(({ id, title, boxarts, interestingMoments }) => {
                 const moments = interestingMoments.filter(({ type }) => type === 'Middle');
                 const boxart = boxarts.reduce((accBox, nextBox) => accBox.width * accBox.height < nextBox.width * nextBox.height ? accBox : nextBox);
                 return moments.zip(boxart, ({ time }, { url }) => ({ id, title, time, url }));

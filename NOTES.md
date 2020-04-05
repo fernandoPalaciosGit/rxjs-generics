@@ -169,6 +169,14 @@ authorizations.forEach(
 REDUCE()
 al construir un array, cuando quieres hacer una comparacion de varios elementos, debes usar un reduce(), porqu es el unico metodo del prototype de arrray que maneja 2 valores en el iterador.
 
-ZIP -> CREMALLERA
+FLAT()
+- Nativo: crear una nueva lista con todas las sublistac concatenadas hasta el nivel que especifiquemos por argumento
+- se utiliza para reducir las dimensiones de nustras listas anidadas
+
+FLATMAP()
+- misma utilidad que flat, pero con un iterador que devuelve el valor alojado en la posicion iterable
+- es lo mismo que un map + flat(1)
+
+ZIP() -> CREMALLERA / MERGE DE ARRAYS
 se trata de un metodo que hace merge entre arrays
 recibe el nombre por su comportamiento, ya que escoje cada indice de los arrays y los mergea hasta que no encuentra ningulna correclacion y deja de mergear 
