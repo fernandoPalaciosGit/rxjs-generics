@@ -1,5 +1,14 @@
 import { fromEvent, interval, Observable } from 'rxjs';
-import { take, takeUntil, concatMap, map, throttleTime, switchMap } from 'rxjs/operators';
+import {
+    take,
+    takeUntil,
+    concatMap,
+    map,
+    switchMap,
+    distinctUntilChanged,
+    retry,
+    throttleTime
+} from 'rxjs/operators';
 
 // todo: EXAMPLE 1: Subscribing to an event and subscribe thrice
 const button = document.getElementById('button-example-1');
@@ -19,7 +28,7 @@ const boxDrag3 = document.getElementById('box-drag-example3');
 const draggable3 = document.querySelector('.draggable');
 const onMouseDown$ = fromEvent(draggable3, 'mousedown');
 const onMouseMove$ = fromEvent(boxDrag3, 'mousemove');
-const onMouseOut$ = fromEvent(boxDrag3, 'mouseout');
+const onMouseOut$ = fromEvent(boxDrag3, 'mouseout'); // todo: cancel mouseDrag on move out the box
 const onMouseUp$ = fromEvent(boxDrag3, 'mouseup');
 const onMouseDrag$ = onMouseDown$
     .pipe(concatMap(({ offsetX, offsetY }) => {
@@ -46,6 +55,9 @@ const getResultsSearch = (term) => new Observable((observable) => {
         getSearchWikipedia(term).then((results) => {
             observable.next(results);
             observable.complete();
+        }).catch((error) => {
+            // observable.error(error); // this will remove the subscription NOT USE UNTIL WE MUST NOT SHOW RESULTS
+            retry(3); // when the server or the connection is down, retry three times the request of this observable
         });
     }
     return () => clearSearch = true;
@@ -58,10 +70,12 @@ const searchInput5 = document.getElementById('input-text-example5');
 const resultsTextArea5 = document.getElementById('textArea-example5');
 const onTypeSearch$ = fromEvent(searchInput5, 'keypress');
 const resutlsWikipedia$ = onTypeSearch$.pipe(
-    throttleTime(100),
-    switchMap(() => getResultsSearch(searchInput5.value)) // esto permite quedarese con el ultimo observable que se lanza, asi los anteriores dse descartan , incluso si aun estan en proceso de resolverse (se descarta el tiempo de httpRequest)
+    throttleTime(300),
+    map(() => searchInput5.value),
+    distinctUntilChanged(), // evitamos que se puedan repetir las busquedas, observables que sresuelvan los mismo datos
+    switchMap((search) => getResultsSearch(search)) // esto permite quedarese con el ultimo observable que se lanza, asi los anteriores dse descartan , incluso si aun estan en proceso de resolverse (se descarta el tiempo de httpRequest)
 );
 
 resutlsWikipedia$.subscribe((result) => {
     resultsTextArea5.value = result;
-});
+}, (error) => console.log(error));
