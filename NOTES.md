@@ -189,3 +189,10 @@ TRABAJAR CON ITERABLES DE STREAM DE DATOS ---> Observables
 
 TAKE UNTIL NOS PERMITE SUSCRIBIRNOS A OTRO STREAM DE DATOS QUE DESSUSCRIBE EL ACTUAL STREAM DE REDUCER
 stream.pipe(takeuntil(stream))
+
+
+DIFERENCIAS PROMISE Y OBSERVABLE
+- la promesa solo se ejecuata una vez, un observable es una coleccion de stream de datos
+- una promesa NO se puedee cancelar puntuualmente, a un observable puedes eliminar el consumer de la suscripcion
+- el comportamiento lazy del observable (solo en el momento en el que te suscribes la aplicacion reacciona cuando s eresuelve el observable): una promesa es eager (una promersa devuelve una funcion que resuelve la accion), un observable es lazy
+
