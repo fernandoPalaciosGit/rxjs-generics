@@ -202,3 +202,8 @@ ACCIONES A IMPLEMENTAR EN UN NUEVO OBSERVABLE -> semanticas en un observable
 - resolver un error
 - resolver cuando estas completado
 - detener el push de datos al consumer
+
+3 MANERAS DE COMBINAR STREAMS
+- mergeMap(): pila: se resuelven a medida que llegan igual que switchMap, pero se resuelven todos
+- concatMap(): cola:  llegan en orden y se respetan los tiempos de llegada 
+- switchMap(): te quedas con el ultimo observable que se ha suscrito en la cola, los demas se descartan y tambien el tiempo que tarden en reslolverse

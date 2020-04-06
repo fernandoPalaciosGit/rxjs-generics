@@ -1,5 +1,5 @@
 import { fromEvent, interval, Observable } from 'rxjs';
-import { take, takeUntil, concatMap, map } from 'rxjs/operators';
+import { take, takeUntil, concatMap, map, throttleTime, switchMap } from 'rxjs/operators';
 
 // todo: EXAMPLE 1: Subscribing to an event and subscribe thrice
 const button = document.getElementById('button-example-1');
@@ -52,3 +52,16 @@ const getResultsSearch = (term) => new Observable((observable) => {
 });
 // test del observable
 getResultsSearch('terminator').subscribe((result) => console.log(result));
+
+// todo: EXAMPLE5: asociamos el input al observable de la search
+const searchInput5 = document.getElementById('input-text-example5');
+const resultsTextArea5 = document.getElementById('textArea-example5');
+const onTypeSearch$ = fromEvent(searchInput5, 'keypress');
+const resutlsWikipedia$ = onTypeSearch$.pipe(
+    throttleTime(100),
+    switchMap(() => getResultsSearch(searchInput5.value)) // esto permite quedarese con el ultimo observable que se lanza, asi los anteriores dse descartan , incluso si aun estan en proceso de resolverse (se descarta el tiempo de httpRequest)
+);
+
+resutlsWikipedia$.subscribe((result) => {
+    resultsTextArea5.value = result;
+});
