@@ -7,7 +7,7 @@ import {
     switchMap,
     distinctUntilChanged,
     retry,
-    throttleTime
+    throttleTime, filter
 } from 'rxjs/operators';
 
 // todo: EXAMPLE 1: Subscribing to an event and subscribe thrice
@@ -71,8 +71,10 @@ const resultsTextArea5 = document.getElementById('textArea-example5');
 const onTypeSearch$ = fromEvent(searchInput5, 'keypress');
 const resutlsWikipedia$ = onTypeSearch$.pipe(
     throttleTime(300),
+    filter(({keyCode}) => keyCode !== 32), // avoid sending when press space
     map(() => searchInput5.value),
     distinctUntilChanged(), // evitamos que se puedan repetir las busquedas, observables que sresuelvan los mismo datos
+    filter((search) => search.trim().length > 0), // avoid sending empty string
     switchMap((search) => getResultsSearch(search)) // esto permite quedarese con el ultimo observable que se lanza, asi los anteriores dse descartan , incluso si aun estan en proceso de resolverse (se descarta el tiempo de httpRequest)
 );
 
