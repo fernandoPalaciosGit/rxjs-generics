@@ -196,3 +196,9 @@ DIFERENCIAS PROMISE Y OBSERVABLE
 - una promesa NO se puedee cancelar puntuualmente, a un observable puedes eliminar el consumer de la suscripcion
 - el comportamiento lazy del observable (solo en el momento en el que te suscribes la aplicacion reacciona cuando s eresuelve el observable): una promesa es eager (una promersa devuelve una funcion que resuelve la accion), un observable es lazy
 
+ACCIONES A IMPLEMENTAR EN UN NUEVO OBSERVABLE -> semanticas en un observable
+- CANCELACION: dispose
+- resulver un valor
+- resolver un error
+- resolver cuando estas completado
+- detener el push de datos al consumer

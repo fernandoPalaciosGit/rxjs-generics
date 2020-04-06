@@ -1,5 +1,5 @@
-import { fromEvent, interval } from 'rxjs';
-import { take, takeUntil, concatMap, combineAll, map } from 'rxjs/operators';
+import { fromEvent, interval, Observable } from 'rxjs';
+import { take, takeUntil, concatMap, map } from 'rxjs/operators';
 
 // todo: EXAMPLE 1: Subscribing to an event and subscribe thrice
 const button = document.getElementById('button-example-1');
@@ -33,3 +33,22 @@ onMouseDrag$.subscribe(({ horizontal, vertical }) => {
     draggable3.style.left = `${horizontal}px`;
     draggable3.style.top = `${vertical}px`;
 });
+
+
+// todo: EXAMPLE4: create an observable to search in wikipedia
+let URL = "https://en.wikipedia.org/w/api.php?origin=*&action=opensearch&list=search&format=json&search=";
+const getSearchWikipedia = (term) => fetch(`${URL}${encodeURIComponent(term)}`).then((response) => response.json()).then(([, search]) => search);
+// creamos un observable de una peticion xhr
+const getResultsSearch = (term) => new Observable((observable) => {
+    let clearSearch = false;
+
+    if (!clearSearch) {
+        getSearchWikipedia(term).then((results) => {
+            observable.next(results);
+            observable.complete();
+        });
+    }
+    return () => clearSearch = true;
+});
+// test del observable
+getResultsSearch('terminator').subscribe((result) => console.log(result));
