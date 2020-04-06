@@ -11,36 +11,36 @@ import {
 } from 'rxjs/operators';
 
 // todo: EXAMPLE 1: Subscribing to an event and subscribe thrice
-const button = document.getElementById('button-example-1');
+const button = document.getElementById('button');
 const buttonClickEvent$ = fromEvent(button, 'click').pipe(take(3));
 buttonClickEvent$.subscribe(() => {
     console.info('STOP example 1 on 3 click');
 });
 
-// todo: EXAMPLE 2: stop buffering until click on event
-const buttonStop2 = document.getElementById('button-stop-example-2');
-const onStopButton2 = fromEvent(buttonStop2, 'click');
-const bufferExample2$ = interval(1000).pipe(takeUntil(onStopButton2));
-bufferExample2$.subscribe((x) => console.info('buffer-example-2'));
+// todo: EXAMPLE 2 : stop buffering until click on event
+const buttonStop = document.getElementById('button-stop');
+const onStopButton = fromEvent(buttonStop, 'click');
+const bufferExample$ = interval(1000).pipe(takeUntil(onStopButton));
+bufferExample$.subscribe((x) => console.info('buffer'));
 
-// todo: EXAMPLE 3: subscribe to drags
-const boxDrag3 = document.getElementById('box-drag-example3');
-const draggable3 = document.querySelector('.draggable');
-const onMouseDown$ = fromEvent(draggable3, 'mousedown');
-const onMouseMove$ = fromEvent(boxDrag3, 'mousemove');
-const onMouseOut$ = fromEvent(boxDrag3, 'mouseout'); // todo: cancel mouseDrag on move out the box
-const onMouseUp$ = fromEvent(boxDrag3, 'mouseup');
+// todo: EXAMPLE : subscribe to drags
+const boxDrag = document.getElementById('box-drag');
+const draggable = document.querySelector('.draggable');
+const onMouseDown$ = fromEvent(draggable, 'mousedown');
+const onMouseMove$ = fromEvent(boxDrag, 'mousemove');
+const onMouseOut$ = fromEvent(boxDrag, 'mouseout'); // todo: cancel mouseDrag on move out the box
+const onMouseUp$ = fromEvent(boxDrag, 'mouseup');
 const onMouseDrag$ = onMouseDown$
     .pipe(concatMap(({ offsetX, offsetY }) => {
         return onMouseMove$.pipe(map(({ pageX, pageY }) => ({
-            horizontal: pageX - boxDrag3.offsetLeft - offsetX,
-            vertical: pageY - boxDrag3.offsetTop - offsetY
+            horizontal: pageX - boxDrag.offsetLeft - offsetX,
+            vertical: pageY - boxDrag.offsetTop - offsetY
         })), takeUntil(onMouseUp$))
     }));
 
 onMouseDrag$.subscribe(({ horizontal, vertical }) => {
-    draggable3.style.left = `${horizontal}px`;
-    draggable3.style.top = `${vertical}px`;
+    draggable.style.left = `${horizontal}px`;
+    draggable.style.top = `${vertical}px`;
 });
 
 
@@ -57,7 +57,7 @@ const getResultsSearch = (term) => new Observable((observable) => {
             observable.complete();
         }).catch((error) => {
             // observable.error(error); // this will remove the subscription NOT USE UNTIL WE MUST NOT SHOW RESULTS
-            retry(3); // when the server or the connection is down, retry three times the request of this observable
+            retry(); // when the server or the connection is down, retry three times the request of this observable
         });
     }
     return () => clearSearch = true;
@@ -65,19 +65,43 @@ const getResultsSearch = (term) => new Observable((observable) => {
 // test del observable
 getResultsSearch('terminator').subscribe((result) => console.log(result));
 
-// todo: EXAMPLE5: asociamos el input al observable de la search
-const searchInput5 = document.getElementById('input-text-example5');
-const resultsTextArea5 = document.getElementById('textArea-example5');
-const onTypeSearch$ = fromEvent(searchInput5, 'keypress');
-const resutlsWikipedia$ = onTypeSearch$.pipe(
-    throttleTime(300),
-    filter(({keyCode}) => keyCode !== 32), // avoid sending when press space
-    map(() => searchInput5.value),
-    distinctUntilChanged(), // evitamos que se puedan repetir las busquedas, observables que sresuelvan los mismo datos
-    filter((search) => search.trim().length > 0), // avoid sending empty string
-    switchMap((search) => getResultsSearch(search)) // esto permite quedarese con el ultimo observable que se lanza, asi los anteriores dse descartan , incluso si aun estan en proceso de resolverse (se descarta el tiempo de httpRequest)
-);
+// todo: EXAMPLE: asociamos el input al observable de la search
+function onSubscribeSearchesWikipedia() {
+    const searchInput = document.getElementById('input-text');
+    const onTypeSearch$ = fromEvent(searchInput, 'keypress');
+    const closeSearches$ = fromEvent(document.getElementById('button-close-search'), 'click');
 
-resutlsWikipedia$.subscribe((result) => {
-    resultsTextArea5.value = result;
-}, (error) => console.log(error));
+    return onTypeSearch$.pipe(
+        throttleTime(300),
+        filter(({ keyCode }) => keyCode !== 32), // avoid sending when press space
+        map(() => searchInput.value),
+        distinctUntilChanged(), // evitamos que se puedan repetir las busquedas, observables que sresuelvan los mismo datos
+        filter((search) => search.trim().length > 0), // avoid sending empty string
+        switchMap((search) => getResultsSearch(search)), // esto permite quedarese con el ultimo observable que se lanza, asi los anteriores dse descartan , incluso si aun estan en proceso de resolverse (se descarta el tiempo de httpRequest)
+        takeUntil(closeSearches$)
+    )
+}
+
+// todo: EXAMPLE6: search on click button
+const onClickSearch$ = fromEvent(document.getElementById('button-search'), 'click');
+
+function openSearchesWikipedia() {
+    const containerTextArea = document.getElementById('container');
+    containerTextArea.style.display = 'block';
+}
+
+function printResults(result) {
+    const resultsTextArea = document.getElementById('textArea');
+    resultsTextArea.value = result;
+}
+
+function logErrorResults(error) {
+    console.log(error)
+}
+
+// accion 1 cuuando onclick: se abre el formulario
+onClickSearch$.subscribe(openSearchesWikipedia);
+// accion 2 onclick: inicializo el autocomplete
+onClickSearch$.pipe(
+    switchMap(() => onSubscribeSearchesWikipedia()), // necesito resolverlo com switch para que tras continuos clicks, solo me quede con el ultimo onTypeSearch$
+).subscribe(printResults, logErrorResults);

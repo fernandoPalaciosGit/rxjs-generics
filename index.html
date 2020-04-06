@@ -5,17 +5,25 @@
     <title>Document</title>
 </head>
 <body>
-<input id="button-example-1" type="button" value="EXAMPLE 1">
+<input id="button" type="button" value="EXAMPLE 1">
 <br>
-<input id="button-stop-example-2" type="button" value="EXAMPLE 2: stop buffer">
+<input id="button-stop" type="button" value="EXAMPLE 2: stop buffer">
 <br>
-<div id="box-drag-example3" style="background-color: bisque; width: 700px; height: 300px; position: relative">
+<div id="box-drag" style="background-color: bisque; width: 700px; height: 300px; position: relative">
     <span class="draggable"
           style="position: absolute; width: 100px; height: 20px; background-color: aquamarine; cursor: pointer">DRAG ME</span>
 </div>
-<div class="container-example4">
-    <label for="input-text-example5">search Wikipedia</label><input type="text" name="" id="input-text-example5"/><br>
-    <label for="textArea-example5">results</label><br><textarea name="" id="textArea-example5" cols="100" rows="20"></textarea>
+
+<button id="button-search">Search in WIkipedia</button>
+<div id="container" style="display: none">
+    <button id="button-close-search">Closes searches</button>
+    <div>
+        <label for="input-text">terms related</label>: <input type="text" name="" id="input-text"/>
+    </div>
+    <div>
+        <label for="textArea"></label>
+        <textarea name="" id="textArea" cols="100" rows="20"></textarea>
+    </div>
 </div>
 <script src="assets/bundle.js"></script>
 </body>
