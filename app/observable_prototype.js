@@ -70,7 +70,20 @@ class Observable {
             return {
                 dispose: () => domEl.removeEventListener(event, handler)
             }
-        })
+        });
+    }
+
+    // @deprecate in es6
+    static objectObservation(object) {
+        return new Observable(function (observer) {
+            const handler = (result) => observer.onNext(result);
+
+            Object.observe(object, handler);
+
+            return {
+                dispose: () => Object.unobserve(object, handler)
+            }
+        });
     }
 }
 

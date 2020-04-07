@@ -126,4 +126,11 @@ onClickSearch$
         () => console.log('error'),
         () => console.log('complete')
     );
-// .dispose();
+
+// todo: EXAMPLE 8 - test object observation
+const modelData = {name: 'Juanito'};
+ObservableTest.objectObservation(modelData).subscribe((changes) => {
+    console.log(changes);
+});
+modelData.name = `${modelData.name} Valderrama`;
+modelData.name = `${modelData.name} de la Huerta`;
