@@ -9,6 +9,7 @@ import {
     retry,
     throttleTime, filter, tap
 } from 'rxjs/operators';
+import ObservableTest from './observable_prototype';
 
 // todo: EXAMPLE 1: Subscribing to an event and subscribe thrice
 const button = document.getElementById('button');
@@ -111,3 +112,17 @@ fromEvent(searchButton, 'click').pipe(
     // accion 2 onclick: inicializo el autocomplete
     switchMap(() => onSubscribeSearchesWikipedia()), // necesito resolverlo com switch para que tras continuos clicks, solo me quede con el ultimo onTypeSearch$
 ).subscribe(printResults, logErrorResults);
+
+
+// todo: EXAMPLE 7 - test Observable prototype
+const buttonSearch = document.getElementById('search-button-test-observable');
+const onClickSearch$ = ObservableTest.fromEvent(buttonSearch, 'click');
+
+onClickSearch$
+    .map(({ pageX }) => `${pageX + 50}px`)
+    .subscribe(
+        (result) => console.log('click', result),
+        () => console.log('error'),
+        () => console.log('complete')
+    );
+// .dispose();

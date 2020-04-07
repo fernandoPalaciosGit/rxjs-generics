@@ -8,11 +8,11 @@ class Observable {
 
     subscribe(onNext, onError, onComplete) {
         if (typeof onNext === 'function') {
-            this.onNextCallBack({
+            return this.onNextCallBack({
                 onNext, onError: onError || emptyCallback, onComplete: onComplete || emptyCallback,
             })
         } else {
-            this.onNextCallBack(onNext);
+            return this.onNextCallBack(onNext);
         }
     }
 
@@ -52,12 +52,4 @@ class Observable {
     }
 }
 
-const buttonSearch = document.getElementById('searchButton');
-const onClickSearch$ = Observable.fromEvent(buttonSearch, 'click');
-onClickSearch$.subscribe(
-    () => console.log('click'),
-    () => console.log('error'),
-    () => console.log('complete')
-);
-onClickSearch$.dispose();
-
+export default Observable;
