@@ -204,6 +204,22 @@ ACCIONES A IMPLEMENTAR EN UN NUEVO OBSERVABLE -> semanticas en un observable
 - detener el push de datos al consumer
 
 3 MANERAS DE COMBINAR STREAMS
+El ultimo paso para contruir nustro observable, antes de suscribirnos al streasm de datos que genera, es ¿que metodo utiklizamos para combinar los streams de nustra coleccion de observables?
+
 - mergeMap(): pila: se resuelven a medida que llegan igual que switchMap, pero se resuelven todos
 - concatMap(): cola:  llegan en orden y se respetan los tiempos de llegada 
 - switchMap(): te quedas con el ultimo observable que se ha suscrito en la cola, los demas se descartan y tambien el tiempo que tarden en reslolverse
+
+
+doAction() -> ¿que ocurriria si durante la construccion de nuestro observable queremos ejecutar una accion -> SIDE-EFFERCT -> fuera de lo que es la composicion de los datos de nuestra coleccion?
+Cuando tenemos varios observables que resuelven cosas de manera indempendiente, si podemos suscribirlos en la misma ejecucion BIEN, pero lo normal es que se suscriban en diferentes partes de la aplicacion. por lo que PARA EVITAR SIDE EFFECTS debemos usar doAction()
+- El doaccion solo se puedde aplicar como accion de un solo observaable, no a nuestra coleccion, asi que primero debemos hayar donde queremos asociar el side-effect y despues continuar con la construccion de la coleccion del observable.
+Por eso, por definicion, el side effect es sincrono
+- tiene la misma interfaz de manejadores que el subscribe() (next, error, complete)
+
+
+-------------------------
+switchMap() : para combinar observers (para construir nuestra logica de streams de observers)
+takeUntil() : para finalizar la suscripcion de observers
+-------------------------
+

@@ -1,4 +1,4 @@
-import { fromEvent, interval, Observable } from 'rxjs';
+import { fromEvent, interval, Observable, } from 'rxjs';
 import {
     take,
     takeUntil,
@@ -7,7 +7,7 @@ import {
     switchMap,
     distinctUntilChanged,
     retry,
-    throttleTime, filter
+    throttleTime, filter, tap
 } from 'rxjs/operators';
 
 // todo: EXAMPLE 1: Subscribing to an event and subscribe thrice
@@ -67,7 +67,6 @@ getResultsSearch('terminator').subscribe((result) => console.log(result));
 
 // todo: EXAMPLE: asociamos el input al observable de la search
 function onSubscribeSearchesWikipedia() {
-    const searchInput = document.getElementById('input-text');
     const onTypeSearch$ = fromEvent(searchInput, 'keypress');
     const closeSearches$ = fromEvent(document.getElementById('button-close-search'), 'click');
 
@@ -78,20 +77,27 @@ function onSubscribeSearchesWikipedia() {
         distinctUntilChanged(), // evitamos que se puedan repetir las busquedas, observables que sresuelvan los mismo datos
         filter((search) => search.trim().length > 0), // avoid sending empty string
         switchMap((search) => getResultsSearch(search)), // esto permite quedarese con el ultimo observable que se lanza, asi los anteriores dse descartan , incluso si aun estan en proceso de resolverse (se descarta el tiempo de httpRequest)
-        takeUntil(closeSearches$)
+        takeUntil(closeSearches$.pipe(tap(closeSearchesWikipedia))) // trakeUntil llamara internamente al dispose del observer tanto del onTypeSearch$ como del closeSearches$ (se dejara dejara de ssuscribir eventos en esos elementos)
     )
 }
 
-// todo: EXAMPLE6: search on click button
-const onClickSearch$ = fromEvent(document.getElementById('button-search'), 'click');
+// todo: EXAMPLE6: open and close searches
+const searchButton = document.getElementById('button-search');
+const containerTextArea = document.getElementById('container');
+const resultsTextArea = document.getElementById('textArea');
+const searchInput = document.getElementById('input-text');
 
 function openSearchesWikipedia() {
-    const containerTextArea = document.getElementById('container');
     containerTextArea.style.display = 'block';
 }
 
+function closeSearchesWikipedia() {
+    containerTextArea.style.display = 'none';
+    resultsTextArea.value = '';
+    searchInput.value = '';
+}
+
 function printResults(result) {
-    const resultsTextArea = document.getElementById('textArea');
     resultsTextArea.value = result;
 }
 
@@ -99,9 +105,9 @@ function logErrorResults(error) {
     console.log(error)
 }
 
-// accion 1 cuuando onclick: se abre el formulario
-onClickSearch$.subscribe(openSearchesWikipedia);
-// accion 2 onclick: inicializo el autocomplete
-onClickSearch$.pipe(
+fromEvent(searchButton, 'click').pipe(
+    // accion 1 cuuando onclick: se abre el formulario
+    tap(openSearchesWikipedia),
+    // accion 2 onclick: inicializo el autocomplete
     switchMap(() => onSubscribeSearchesWikipedia()), // necesito resolverlo com switch para que tras continuos clicks, solo me quede con el ultimo onTypeSearch$
 ).subscribe(printResults, logErrorResults);
