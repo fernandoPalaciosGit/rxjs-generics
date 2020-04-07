@@ -120,6 +120,7 @@ const onClickSearch$ = ObservableTest.fromEvent(buttonSearch, 'click');
 
 onClickSearch$
     .map(({ pageX }) => `${pageX + 50}px`)
+    .take(3)
     .subscribe(
         (result) => console.log('click', result),
         () => console.log('error'),

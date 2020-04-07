@@ -38,6 +38,28 @@ class Observable {
         });
     }
 
+    // take; subscribe  onnext until accummulator, else oncompleted
+    take(counter) {
+        const observableContextPrevious = this;
+        let retry = 0;
+        return new Observable((observer) => {
+            const subscriptionPrevious = observableContextPrevious.subscribe(
+                (result) => {
+                    if (retry < counter) {
+                        retry++;
+                        observer.onNext(result);
+                    } else {
+                        observer.onComplete();
+                        subscriptionPrevious.dispose();
+                    }
+                },
+                (error) => observer.onError(error),
+                () => observer.onComplete(),
+            );
+            return subscriptionPrevious;
+        });
+    }
+
     static fromEvent(domEl, event) {
         return new Observable(function (observer) {
             const handler = (ev) => observer.onNext(ev);
