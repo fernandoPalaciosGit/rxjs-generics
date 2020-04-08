@@ -73,7 +73,7 @@ class Observable {
         });
     }
 
-    // @deprecate in es6
+    // @deprecate in es6  -> Use rxjs-observe
     static objectObservation(object) {
         return new Observable(function (observer) {
             const handler = (result) => observer.onNext(result);

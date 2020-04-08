@@ -1,4 +1,4 @@
-import { fromEvent, interval, Observable, } from 'rxjs';
+import { fromEvent, interval, Observable } from 'rxjs';
 import {
     take,
     takeUntil,
@@ -9,6 +9,7 @@ import {
     retry,
     throttleTime, filter, tap
 } from 'rxjs/operators';
+import { observe } from "rxjs-observe";
 import ObservableTest from './observable_prototype';
 
 // todo: EXAMPLE 1: Subscribing to an event and subscribe thrice
@@ -128,9 +129,41 @@ onClickSearch$
     );
 
 // todo: EXAMPLE 8 - test object observation
-const modelData = {name: 'Juanito'};
-ObservableTest.objectObservation(modelData).subscribe((changes) => {
+/*
+const modelData = { name: 'Juanito' };
+const { observables, proxy } = observe(modelData);
+observables.name.subscribe((changes) => {
     console.log(changes);
 });
-modelData.name = `${modelData.name} Valderrama`;
-modelData.name = `${modelData.name} de la Huerta`;
+proxy.name = `${modelData.name} Valderrama`;
+proxy.name = `${modelData.name} de la Huerta`;
+*/
+
+// todo: EXAMPLE 9 -make changes to an prooxy object from a form, and propagate the observer to the http request
+const inputPersonName = document.getElementById('observable-object-name');
+const inputPersonAge = document.getElementById('observable-object-age');
+const observerAge$ = fromEvent(inputPersonAge, 'change');
+const observerName$ = fromEvent(inputPersonName, 'change');
+const modelPerson = { name: 'Fer', age: 35 };
+const { observables, proxy } = observe(modelPerson);
+
+// subscribe changes on model : less efficient
+/*
+observables.name.subscribe((a, b, c) => {
+    inputPersonName.value = modelPerson.name;
+});
+*/
+
+// subscribe events on the input to change the model
+observerAge$.subscribe(({ currentTarget: { value } }) => {
+    proxy.age = value;
+});
+observerName$.subscribe(({ currentTarget: { value } }) => {
+    proxy.name = value;
+});
+// testing changes on the Observation of our model
+observables.name.subscribe((change) => console.log(`model has change name: ${change}`));
+observables.age.subscribe((change) => console.log(`model has change age: ${change}`));
+
+// testing async changes model
+setTimeout(() => proxy.name = 'from async task', 5000);

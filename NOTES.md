@@ -203,7 +203,7 @@ ACCIONES A IMPLEMENTAR EN UN NUEVO OBSERVABLE -> semanticas en un observable
 - resolver cuando estas completado
 - detener el push de datos al consumer
 
-3 MANERAS DE COMBINAR STREAMS
+3 MANERAS DE COMBINAR STREAMS : ¿cual es el patron que utilizamos para resolver esta concurrencia?
 El ultimo paso para contruir nustro observable, antes de suscribirnos al streasm de datos que genera, es ¿que metodo utiklizamos para combinar los streams de nustra coleccion de observables?
 
 - mergeMap(): pila: se resuelven a medida que llegan igual que switchMap, pero se resuelven todos
